@@ -9,9 +9,7 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
     background-color: ${({ theme }) => theme.colors.background};
@@ -23,48 +21,16 @@ const GlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
   }
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
+  a { color: inherit; text-decoration: none; }
+  button { cursor: pointer; border: none; background: none; font-family: inherit; }
+  img { max-width: 100%; display: block; }
+  input, textarea { font-family: inherit; }
+  ul, ol { list-style: none; }
 
-  button {
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-family: inherit;
-  }
-
-  img {
-    max-width: 100%;
-    display: block;
-  }
-
-  input, textarea {
-    font-family: inherit;
-  }
-
-  ul, ol {
-    list-style: none;
-  }
-
-  ::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.background};
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary};
-    border-radius: 2px;
-  }
-
-  ::selection {
-    background: ${({ theme }) => theme.colors.primary};
-    color: white;
-  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: ${({ theme }) => theme.colors.background}; }
+  ::-webkit-scrollbar-thumb { background: ${({ theme }) => theme.colors.primary}; border-radius: 2px; }
+  ::selection { background: ${({ theme }) => theme.colors.primary}; color: white; }
 `;
 
 export default GlobalStyles;

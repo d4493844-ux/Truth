@@ -8,17 +8,37 @@ import ColorSwatch from '../components/ui/ColorSwatch';
 import SizeSelector from '../components/ui/SizeSelector';
 import SlideToAdd from '../components/ui/SlideToAdd';
 
+const TOP_TEXTURE = 'https://res.cloudinary.com/drefakuj9/image/upload/v1773616495/Cbc_up-2_jgdzsb.png';
+const BOTTOM_TEXTURE = 'https://res.cloudinary.com/drefakuj9/image/upload/v1773616495/cbc_down-2_w8hpnm.png';
+
 const Page = styled.div`
   padding-top: 70px;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+  background: #0a0a0a;
 `;
 
-const Bg = styled.div`
+const TextureTop = styled.div`
   position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 30%, #1a0a0a 0%, #0a0a0a 60%);
+  top: 0; left: 0; right: 0;
+  height: 260px;
+  background-image: url('${TOP_TEXTURE}');
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+`;
+
+const TextureBottom = styled.div`
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 260px;
+  background-image: url('${BOTTOM_TEXTURE}');
+  background-size: cover;
+  background-position: center bottom;
+  opacity: 0.2;
   pointer-events: none;
   z-index: 0;
 `;
@@ -102,13 +122,15 @@ const ImageWrap = styled.div`
   font-size: 0.75rem;
   letter-spacing: 2px;
   margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
   img { width: 80%; object-fit: contain; }
 `;
 
 const AccuracyBadge = styled.div`
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 12px;
+  right: 12px;
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 8px;
@@ -183,9 +205,7 @@ const StyleGuideRow = styled(Link)`
 
 const SlideWrap = styled.div`
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   padding: 16px;
   background: linear-gradient(to top, ${({ theme }) => theme.colors.background} 80%, transparent);
   z-index: 50;
@@ -205,7 +225,6 @@ export default function ProductPage() {
   const { id } = useParams();
   const { product, loading } = useProduct(id);
   const { addItem } = useCart();
-
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [qty, setQty] = useState(1);
@@ -227,7 +246,8 @@ export default function ProductPage() {
 
   return (
     <Page>
-      <Bg />
+      <TextureTop />
+      <TextureBottom />
       <Content>
         <Header>
           <BackBtn to="/shop"><FiChevronLeft /></BackBtn>
@@ -239,8 +259,7 @@ export default function ProductPage() {
         </Header>
 
         <SeasonPill>
-          {product.season}
-          <FiChevronRight size={12} />
+          {product.season} <FiChevronRight size={12} />
         </SeasonPill>
 
         <Label style={{ padding: '0 16px', marginBottom: 8 }}>Colorways</Label>
@@ -254,26 +273,21 @@ export default function ProductPage() {
 
         <ComingSoon>-COMING SOON-</ComingSoon>
 
-        <div style={{ position: 'relative' }}>
-          <ImageWrap>
-            {product.image
-              ? <img src={product.image} alt={product.name} />
-              : 'PRODUCT IMAGE'
-            }
-          </ImageWrap>
+        <ImageWrap>
+          {product.image
+            ? <img src={product.image} alt={product.name} />
+            : 'PRODUCT IMAGE'
+          }
           {product.accuracy && (
             <AccuracyBadge>
               {product.accuracy}%<br />
               <span style={{ fontSize: '0.6rem', fontWeight: 400 }}>Accuracy</span>
             </AccuracyBadge>
           )}
-        </div>
+        </ImageWrap>
 
         <Bottom>
-          <div>
-            <Price>₦{product.price?.toLocaleString()}</Price>
-          </div>
-
+          <div><Price>₦{product.price?.toLocaleString()}</Price></div>
           <div>
             <Label>Quantity</Label>
             <QtyRow>
@@ -282,15 +296,12 @@ export default function ProductPage() {
               <QtyBtn onClick={() => setQty(q => q + 1)}>+</QtyBtn>
             </QtyRow>
           </div>
-
           <div>
             <Label>Size</Label>
             <SizeSelector selected={selectedSize} onSelect={setSelectedSize} />
           </div>
-
           <StyleGuideRow to="#">
-            Style Guide
-            <FiChevronRight />
+            Style Guide <FiChevronRight />
           </StyleGuideRow>
         </Bottom>
       </Content>

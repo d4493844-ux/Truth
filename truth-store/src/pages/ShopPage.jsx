@@ -5,9 +5,44 @@ import { FiSearch, FiChevronLeft } from 'react-icons/fi';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ui/ProductCard';
 
+const TOP_TEXTURE = 'https://res.cloudinary.com/drefakuj9/image/upload/v1773616495/Cbc_up-2_jgdzsb.png';
+const BOTTOM_TEXTURE = 'https://res.cloudinary.com/drefakuj9/image/upload/v1773616495/cbc_down-2_w8hpnm.png';
+
 const Page = styled.div`
   padding-top: 70px;
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: #0a0a0a;
+`;
+
+const TextureTop = styled.div`
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 260px;
+  background-image: url('${TOP_TEXTURE}');
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+`;
+
+const TextureBottom = styled.div`
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 260px;
+  background-image: url('${BOTTOM_TEXTURE}');
+  background-size: cover;
+  background-position: center bottom;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+`;
+
+const Content = styled.div`
+  position: relative;
+  z-index: 1;
 `;
 
 const Header = styled.div`
@@ -19,13 +54,10 @@ const Header = styled.div`
 `;
 
 const BackBtn = styled(Link)`
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: 50%;
   background: ${({ theme }) => theme.colors.surface};
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   color: white;
   border: 1px solid ${({ theme }) => theme.colors.border};
 `;
@@ -40,13 +72,10 @@ const Title = styled.h1`
 `;
 
 const SearchBtn = styled.button`
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: 50%;
   background: ${({ theme }) => theme.colors.surface};
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   color: white;
   border: 1px solid ${({ theme }) => theme.colors.border};
 `;
@@ -95,38 +124,38 @@ export default function ShopPage() {
 
   return (
     <Page>
-      <Header>
-        <BackBtn to="/"><FiChevronLeft /></BackBtn>
-        <Title>{category ? category.toUpperCase() : 'SHOP'}</Title>
-        <SearchBtn onClick={() => setShowSearch(s => !s)}>
-          <FiSearch />
-        </SearchBtn>
-      </Header>
+      <TextureTop />
+      <TextureBottom />
+      <Content>
+        <Header>
+          <BackBtn to="/"><FiChevronLeft /></BackBtn>
+          <Title>{category ? category.toUpperCase() : 'SHOP'}</Title>
+          <SearchBtn onClick={() => setShowSearch(s => !s)}><FiSearch /></SearchBtn>
+        </Header>
 
-      {showSearch && (
-        <SearchBar>
-          <SearchInput
-            placeholder="Search products..."
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            autoFocus
-          />
-        </SearchBar>
-      )}
+        {showSearch && (
+          <SearchBar>
+            <SearchInput
+              placeholder="Search products..."
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              autoFocus
+            />
+          </SearchBar>
+        )}
 
-      {loading ? (
-        <Grid>
-          {[1,2,3,4].map(i => (
-            <div key={i} style={{ height: 220, background: '#1a1a1a', borderRadius: 12 }} />
-          ))}
-        </Grid>
-      ) : filtered.length > 0 ? (
-        <Grid>
-          {filtered.map(p => <ProductCard key={p.id} product={p} />)}
-        </Grid>
-      ) : (
-        <Empty>No products found</Empty>
-      )}
+        {loading ? (
+          <Grid>
+            {[1,2,3,4].map(i => (
+              <div key={i} style={{ height: 220, background: '#1a1a1a', borderRadius: 12 }} />
+            ))}
+          </Grid>
+        ) : filtered.length > 0 ? (
+          <Grid>{filtered.map(p => <ProductCard key={p.id} product={p} />)}</Grid>
+        ) : (
+          <Empty>No products found</Empty>
+        )}
+      </Content>
     </Page>
   );
 }
