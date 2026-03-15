@@ -1,0 +1,63 @@
+const theme = {
+  colors: {
+    background: '#0a0a0a',
+    backgroundAlt: '#111111',
+    surface: '#1a1a1a',
+    surfaceHover: '#222222',
+    primary: '#8B0000',
+    primaryHover: '#a00000',
+    accent: '#c41e1e',
+    text: '#ffffff',
+    textMuted: '#888888',
+    textDim: '#555555',
+    border: '#2a2a2a',
+    borderHover: '#444444',
+    success: '#4caf50',
+    pink: '#f5c6d0',
+  },
+  fonts: {
+    heading: "'Anton', 'Impact', sans-serif",
+    body: "'Inter', 'Helvetica Neue', sans-serif",
+    mono: "'Space Mono', monospace",
+  },
+  fontSizes: {
+    xs: '0.75rem',
+    sm: '0.875rem',
+    md: '1rem',
+    lg: '1.125rem',
+    xl: '1.25rem',
+    '2xl': '1.5rem',
+    '3xl': '2rem',
+    '4xl': '2.5rem',
+    '5xl': '3.5rem',
+  },
+  spacing: {
+    xs: '4px',
+    sm: '8px',
+    md: '16px',
+    lg: '24px',
+    xl: '32px',
+    '2xl': '48px',
+    '3xl': '64px',
+  },
+  radii: {
+    sm: '6px',
+    md: '12px',
+    lg: '20px',
+    xl: '28px',
+    full: '9999px',
+  },
+  shadows: {
+    card: '0 4px 24px rgba(0,0,0,0.4)',
+    glow: '0 0 20px rgba(139,0,0,0.3)',
+    glowStrong: '0 0 40px rgba(139,0,0,0.5)',
+  },
+  breakpoints: {
+    sm: '480px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+  },
+};
+
+export default theme;
