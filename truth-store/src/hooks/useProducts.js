@@ -5,11 +5,15 @@ import { products as mockProducts, getProductsByCategory } from '../lib/mockData
 export const useProducts = (category = null) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
       setLoading(true);
+      if (!supabase) {
+        setProducts(getProductsByCategory(category));
+        setLoading(false);
+        return;
+      }
       try {
         let query = supabase.from('products').select('*');
         if (category) query = query.eq('category', category);
@@ -18,7 +22,6 @@ export const useProducts = (category = null) => {
         setProducts(data?.length ? data : getProductsByCategory(category));
       } catch {
         setProducts(getProductsByCategory(category));
-        setError(null);
       } finally {
         setLoading(false);
       }
@@ -26,7 +29,7 @@ export const useProducts = (category = null) => {
     fetch();
   }, [category]);
 
-  return { products, loading, error };
+  return { products, loading };
 };
 
 export const useProduct = (id) => {
@@ -36,13 +39,18 @@ export const useProduct = (id) => {
   useEffect(() => {
     const fetch = async () => {
       setLoading(true);
+      if (!supabase) {
+        setProduct(mockProducts.find(p => p.id === id) || null);
+        setLoading(false);
+        return;
+      }
       try {
         const { data, error } = await supabase
           .from('products').select('*').eq('id', id).single();
         if (error) throw error;
         setProduct(data || mockProducts.find(p => p.id === id));
       } catch {
-        setProduct(mockProducts.find(p => p.id === id));
+        setProduct(mockProducts.find(p => p.id === id) || null);
       } finally {
         setLoading(false);
       }

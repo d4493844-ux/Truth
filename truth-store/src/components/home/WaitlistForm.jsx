@@ -41,10 +41,12 @@ export default function WaitlistForm() {
     if (!email) return;
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from('waitlist')
-        .insert([{ full_name: name, email }]);
-      if (error) throw error;
+      if (supabase) {
+        const { error } = await supabase
+          .from('waitlist')
+          .insert([{ full_name: name, email }]);
+        if (error) throw error;
+      }
       setStatus({ ok: true, msg: "You're on the list. Stay tuned." });
       setName(''); setEmail('');
     } catch {
@@ -56,17 +58,8 @@ export default function WaitlistForm() {
 
   return (
     <Form>
-      <Input
-        placeholder="Full-name"
-        value={name}
-        onChange={e => setName(e.target.value)}
-      />
-      <Input
-        placeholder="E-mail"
-        type="email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
+      <Input placeholder="Full-name" value={name} onChange={e => setName(e.target.value)} />
+      <Input placeholder="E-mail" type="email" value={email} onChange={e => setEmail(e.target.value)} />
       <Button onClick={handleSubmit} disabled={loading} full>
         {loading ? 'Submitting...' : 'Submit'}
       </Button>
