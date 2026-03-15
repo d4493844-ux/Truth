@@ -1,106 +1,153 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Overlay = styled(motion.div)`
+const SidebarWrap = styled(motion.div)`
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 200;
-  backdrop-filter: blur(4px);
-`;
-
-const Drawer = styled(motion.div)`
-  position: fixed;
-  top: 0;
   left: 0;
+  top: 70px;
   bottom: 0;
-  width: 280px;
-  background: ${({ theme }) => theme.colors.surface};
-  z-index: 201;
+  z-index: 90;
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  align-items: center;
+  background: rgba(15,15,15,0.95);
+  backdrop-filter: blur(12px);
   border-right: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 16px 0;
+  overflow: hidden;
 `;
 
-const CloseBtn = styled.button`
-  align-self: flex-end;
-  color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 1.4rem;
-  margin-bottom: 32px;
-  transition: color 0.2s;
-  &:hover { color: white; }
-`;
-
-const BrandName = styled.div`
-  font-family: ${({ theme }) => theme.fonts.heading};
-  font-size: 2rem;
-  letter-spacing: 6px;
-  margin-bottom: 40px;
-  color: ${({ theme }) => theme.colors.text};
+const ToggleBtn = styled.button`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const NavItem = styled(Link)`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 14px 0;
-  font-size: 0.9rem;
-  letter-spacing: 2px;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 8px;
+  gap: 4px;
+  color: ${({ $active, theme }) => $active ? 'white' : theme.colors.textDim};
+  transition: all 0.2s;
+  position: relative;
+  &:hover { color: white; }
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: ${({ $active }) => $active ? '24px' : '0'};
+    background: ${({ theme }) => theme.colors.primary};
+    border-radius: 0 2px 2px 0;
+    transition: height 0.2s;
+  }
+`;
+
+const Icon = styled.span`
+  font-size: 1.3rem;
+  line-height: 1;
+`;
+
+const Label = styled(motion.span)`
+  font-size: 0.55rem;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: ${({ theme, $active }) => $active ? theme.colors.accent : theme.colors.textMuted};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  transition: color 0.2s;
-  &:hover { color: ${({ theme }) => theme.colors.text}; }
+  white-space: nowrap;
+  overflow: hidden;
+`;
+
+const AddBtn = styled.button`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.textMuted};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin-top: 8px;
+  transition: all 0.2s;
+  &:hover { border-color: ${({ theme }) => theme.colors.accent}; color: white; }
 `;
 
 const navLinks = [
-  { to: '/shop/tops', label: 'Tops', icon: '👕' },
-  { to: '/shop/bottoms', label: 'Bottoms', icon: '👖' },
-  { to: '/shop/outerwear', label: 'Outerwear', icon: '🧥' },
-  { to: '/shop/headwear', label: 'Headwear', icon: '🧢' },
-  { to: '/shop/footwear', label: 'Footwear', icon: '👟' },
-  { to: '/shop/accessories', label: 'Accessories', icon: '🎒' },
-  { to: '/shop/collectibles', label: 'Collectibles', icon: '📦' },
+  { to: '/shop/tops', icon: '👕', label: 'Tops' },
+  { to: '/shop/bottoms', icon: '👖', label: 'Bottoms' },
+  { to: '/shop/outerwear', icon: '🧥', label: 'Outerwear' },
+  { to: '/shop/headwear', icon: '🧢', label: 'Headwear' },
+  { to: '/shop/footwear', icon: '👟', label: 'Footwear' },
+  { to: '/shop/accessories', icon: '🎒', label: 'Access.' },
+  { to: '/shop/collectibles', icon: '📦', label: 'Collect.' },
 ];
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar() {
+  const [expanded, setExpanded] = useState(true);
   const location = useLocation();
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <Overlay
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-          <Drawer
-            initial={{ x: -280 }}
-            animate={{ x: 0 }}
-            exit={{ x: -280 }}
-            transition={{ type: 'tween', duration: 0.25 }}
-          >
-            <CloseBtn onClick={onClose}><FiX /></CloseBtn>
-            <BrandName>TRUTH</BrandName>
-            {navLinks.map(link => (
-              <NavItem
-                key={link.to}
-                to={link.to}
-                $active={location.pathname === link.to}
-                onClick={onClose}
+    <SidebarWrap
+      initial={{ width: 56 }}
+      animate={{ width: expanded ? 64 : 56 }}
+      transition={{ type: 'tween', duration: 0.2 }}
+    >
+      <ToggleBtn onClick={() => setExpanded(e => !e)}>
+        <motion.span
+          animate={{ rotate: expanded ? 0 : 180 }}
+          transition={{ duration: 0.2 }}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </motion.span>
+      </ToggleBtn>
+
+      {navLinks.map(link => (
+        <NavItem
+          key={link.to}
+          to={link.to}
+          $active={location.pathname === link.to}
+        >
+          <Icon>{link.icon}</Icon>
+          <AnimatePresence>
+            {expanded && (
+              <Label
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 'auto' }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: 0.15 }}
               >
-                <span>{link.icon}</span>
                 {link.label}
-              </NavItem>
-            ))}
-          </Drawer>
-        </>
-      )}
-    </AnimatePresence>
+              </Label>
+            )}
+          </AnimatePresence>
+        </NavItem>
+      ))}
+
+      <AddBtn title="More">+</AddBtn>
+    </SidebarWrap>
   );
 }
