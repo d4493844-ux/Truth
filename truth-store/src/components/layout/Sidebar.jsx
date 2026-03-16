@@ -1,41 +1,43 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SidebarContext } from '../../App';
+
+const ToggleBtn = styled(motion.button)`
+  position: fixed;
+  left: ${({ $open }) => $open ? '68px' : '12px'};
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 95;
+  width: 22px;
+  height: 48px;
+  border-radius: 0 8px 8px 0;
+  background: ${({ theme }) => theme.colors.primary};
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: left 0.25s ease;
+  box-shadow: 2px 0 12px rgba(139,0,0,0.4);
+`;
 
 const SidebarWrap = styled(motion.div)`
   position: fixed;
   left: 0;
   top: 70px;
   bottom: 0;
+  width: 64px;
   z-index: 90;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(15,15,15,0.95);
-  backdrop-filter: blur(12px);
+  background: rgba(13,13,13,0.97);
+  backdrop-filter: blur(16px);
   border-right: 1px solid ${({ theme }) => theme.colors.border};
-  padding: 16px 0;
-  overflow: hidden;
-`;
-
-const ToggleBtn = styled.button`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: ${({ theme }) => theme.colors.surface};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-  transition: all 0.2s;
-  flex-shrink: 0;
-  &:hover {
-    background: ${({ theme }) => theme.colors.primary};
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
+  padding: 20px 0;
 `;
 
 const NavItem = styled(Link)`
@@ -44,8 +46,8 @@ const NavItem = styled(Link)`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 12px 8px;
-  gap: 4px;
+  padding: 11px 6px;
+  gap: 3px;
   color: ${({ $active, theme }) => $active ? 'white' : theme.colors.textDim};
   transition: all 0.2s;
   position: relative;
@@ -57,7 +59,7 @@ const NavItem = styled(Link)`
     top: 50%;
     transform: translateY(-50%);
     width: 2px;
-    height: ${({ $active }) => $active ? '24px' : '0'};
+    height: ${({ $active }) => $active ? '20px' : '0'};
     background: ${({ theme }) => theme.colors.primary};
     border-radius: 0 2px 2px 0;
     transition: height 0.2s;
@@ -65,21 +67,20 @@ const NavItem = styled(Link)`
 `;
 
 const Icon = styled.span`
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   line-height: 1;
 `;
 
-const Label = styled(motion.span)`
-  font-size: 0.55rem;
-  letter-spacing: 1px;
+const Label = styled.span`
+  font-size: 0.5rem;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   white-space: nowrap;
-  overflow: hidden;
 `;
 
 const AddBtn = styled.button`
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -87,7 +88,7 @@ const AddBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin-top: 8px;
   transition: all 0.2s;
   &:hover { border-color: ${({ theme }) => theme.colors.accent}; color: white; }
@@ -96,58 +97,57 @@ const AddBtn = styled.button`
 const navLinks = [
   { to: '/shop/tops', icon: '👕', label: 'Tops' },
   { to: '/shop/bottoms', icon: '👖', label: 'Bottoms' },
-  { to: '/shop/outerwear', icon: '🧥', label: 'Outerwear' },
-  { to: '/shop/headwear', icon: '🧢', label: 'Headwear' },
-  { to: '/shop/footwear', icon: '👟', label: 'Footwear' },
-  { to: '/shop/accessories', icon: '🎒', label: 'Access.' },
-  { to: '/shop/collectibles', icon: '📦', label: 'Collect.' },
+  { to: '/shop/outerwear', icon: '🧥', label: 'Outer' },
+  { to: '/shop/headwear', icon: '🧢', label: 'Heads' },
+  { to: '/shop/footwear', icon: '👟', label: 'Shoes' },
+  { to: '/shop/accessories', icon: '🎒', label: 'Access' },
+  { to: '/shop/collectibles', icon: '📦', label: 'Collect' },
 ];
 
 export default function Sidebar() {
-  const [expanded, setExpanded] = useState(true);
+  const { sidebarOpen, setSidebarOpen } = useContext(SidebarContext);
   const location = useLocation();
 
   return (
-    <SidebarWrap
-      initial={{ width: 56 }}
-      animate={{ width: expanded ? 64 : 56 }}
-      transition={{ type: 'tween', duration: 0.2 }}
-    >
-      <ToggleBtn onClick={() => setExpanded(e => !e)}>
+    <>
+      <ToggleBtn
+        $open={sidebarOpen}
+        onClick={() => setSidebarOpen(o => !o)}
+        whileTap={{ scale: 0.92 }}
+      >
         <motion.span
-          animate={{ rotate: expanded ? 0 : 180 }}
+          animate={{ rotate: sidebarOpen ? 0 : 180 }}
           transition={{ duration: 0.2 }}
           style={{ display: 'flex', alignItems: 'center' }}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+            <path d="M7 2L2 8L7 14" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </motion.span>
       </ToggleBtn>
 
-      {navLinks.map(link => (
-        <NavItem
-          key={link.to}
-          to={link.to}
-          $active={location.pathname === link.to}
-        >
-          <Icon>{link.icon}</Icon>
-          <AnimatePresence>
-            {expanded && (
-              <Label
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: 'auto' }}
-                exit={{ opacity: 0, width: 0 }}
-                transition={{ duration: 0.15 }}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <SidebarWrap
+            initial={{ x: -64, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -64, opacity: 0 }}
+            transition={{ type: 'tween', duration: 0.25 }}
+          >
+            {navLinks.map(link => (
+              <NavItem
+                key={link.to}
+                to={link.to}
+                $active={location.pathname === link.to}
               >
-                {link.label}
-              </Label>
-            )}
-          </AnimatePresence>
-        </NavItem>
-      ))}
-
-      <AddBtn title="More">+</AddBtn>
-    </SidebarWrap>
+                <Icon>{link.icon}</Icon>
+                <Label>{link.label}</Label>
+              </NavItem>
+            ))}
+            <AddBtn>+</AddBtn>
+          </SidebarWrap>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
